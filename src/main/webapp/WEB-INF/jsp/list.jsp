@@ -63,8 +63,7 @@
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
             <div class="container">
-                <h2>blogs</h2>
-                <a href="<c:url value="/blog/create" />">Create a blog</a><br/><br/>
+                <h2>All Photos</h2>
                 <c:choose>
                 <c:when test="${fn:length(blogDatabase) == 0}">
                 <i>There are no blogs in the system.</i>
