@@ -14,3 +14,4 @@ create table if not exists photo (
     primary key (id),
     foreign key (blog_id) references blog
     );
+

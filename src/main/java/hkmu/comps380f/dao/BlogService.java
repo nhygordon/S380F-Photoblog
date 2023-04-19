@@ -24,6 +24,10 @@ public class BlogService {
         return bRepo.findAll();
     }
     @Transactional
+    public List<Photo> getPhotos() {
+        return pRepo.findAll();
+    }
+    @Transactional
     public Blog getBlog(long id)
             throws BlogNotFound {
         Blog blog = bRepo.findById(id).orElse(null);

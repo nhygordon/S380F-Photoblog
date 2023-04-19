@@ -28,6 +28,7 @@ public class BlogController {
     @GetMapping(value = {"", "/list"})
     public String list(ModelMap model) {
         model.addAttribute("blogDatabase", bService.getBlogs());
+        model.addAttribute("photoDatabase", bService.getPhotos());
         return "list";
     }
     @GetMapping("/create")
