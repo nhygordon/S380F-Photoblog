@@ -12,10 +12,11 @@
     </c:when>
     <c:otherwise>
         <c:forEach items="${blogDatabase}" var="entry">
-            blog ${entry.key}:
-            <a href="<c:url value="/blog/view/${entry.key}" />">
-                <c:out value="${entry.value.subject}"/></a>
-            (customer: <c:out value="${entry.value.customerName}"/>)<br />
+            blog ${entry.id}:
+            <a href="<c:url value="/blog/view/${entry.id}" />">
+                <c:out value="${entry.subject}"/></a>
+            (customer: <c:out value="${entry.customerName}"/>)
+            [<a href="<c:url value="/blog/delete/${entry.id}" />">Delete</a>]<br />
         </c:forEach>
     </c:otherwise>
 </c:choose>

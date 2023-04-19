@@ -1,17 +1,36 @@
 package hkmu.comps380f.model;
 
-public class Photo {
-    private String id;
-    private String name;
-    private String mimeContentType;
-    private byte[] contents;
-    // Getters and Setters of id, name, mimeContentType, contents
+import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
 
-    public String getId() {
+import java.util.UUID;
+
+@Entity
+public class Photo {
+    @Id
+    @GeneratedValue
+    @ColumnDefault("random_uuid()")
+    private UUID id;
+    @Column(name = "filename")
+    private String name;
+    @Column(name = "content_type")
+    private String mimeContentType;
+    @Column(name = "content")
+    @Basic(fetch = FetchType.LAZY)
+    @Lob
+    private byte[] contents;
+    @Column(name = "blog_id", insertable=false, updatable=false)
+    private long blogId;
+    @ManyToOne
+    @JoinColumn(name = "blog_id")
+    private Blog blog;
+    // getters and setters of all properties
+
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -38,4 +57,22 @@ public class Photo {
     public void setContents(byte[] contents) {
         this.contents = contents;
     }
+
+    public long getBlogId() {
+        return blogId;
+    }
+
+    public void setBlogId(long blogId) {
+        this.blogId = blogId;
+    }
+
+    public Blog getBlog() {
+        return blog;
+    }
+
+    public void setBlog(Blog blog) {
+        this.blog = blog;
+    }
+
 }
+
