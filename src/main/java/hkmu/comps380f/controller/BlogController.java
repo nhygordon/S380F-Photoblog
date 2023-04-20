@@ -4,6 +4,7 @@ import hkmu.comps380f.dao.BlogService;
 import hkmu.comps380f.exception.BlogNotFound;
 import hkmu.comps380f.exception.PhotoNotFound;
 import hkmu.comps380f.model.Blog;
+import hkmu.comps380f.model.Comment;
 import hkmu.comps380f.model.Photo;
 import hkmu.comps380f.view.DownloadingView;
 import jakarta.annotation.Resource;
@@ -42,6 +43,8 @@ public class BlogController {
 
         private String subject;
         private String body;
+
+        private String comment;
         private List<MultipartFile> photos;
 
         // Getters and Setters of customerName, subject, body, attachments
@@ -63,6 +66,14 @@ public class BlogController {
             this.body = body;
         }
 
+        public String getComment() {
+            return comment;
+        }
+
+        public void setComment(String comment) {
+            this.comment = comment;
+        }
+
         public List<MultipartFile> getPhotos() {
             return photos;
         }
@@ -74,7 +85,7 @@ public class BlogController {
     @PostMapping("/create")
     public View create(Form form, Principal principal) throws IOException {
         long blogId = bService.createBlog(principal.getName(),
-                form.getSubject(), form.getBody(), form.getPhotos());
+                form.getSubject(), form.getBody(), form.getPhotos(), form.getComment());
         return new RedirectView("/blog/view/" + blogId, true);
     }
     @GetMapping("/view/{blogId}")
@@ -127,6 +138,7 @@ public class BlogController {
         Form blogForm = new Form();
         blogForm.setSubject(blog.getSubject());
         blogForm.setBody(blog.getBody());
+        blogForm.setBody(Comment.getcomment());
         modelAndView.addObject("blogForm", blogForm);
         return modelAndView;
     }
@@ -141,8 +153,28 @@ public class BlogController {
             return "redirect:/blog/list";
         }
         bService.updateBlog(blogId, form.getSubject(),
-                form.getBody(), form.getPhotos());
+                form.getBody(), form.getPhotos() , form.getComment());
         return "redirect:/blog/view/" + blogId;
     }
 
-}
+
+    @PostMapping("/edit/{blogId}")
+    public String comment(@PathVariable("blogId") long blogId, Form form,
+                       Principal principal, HttpServletRequest request)
+            throws IOException, BlogNotFound {
+        Blog blog = bService.getBlog(blogId);
+        if (blog == null
+                || (!request.isUserInRole("ROLE_ADMIN")
+                && !principal.getName().equals(blog.getCustomerName()))) {
+            return "redirect:/blog/list";
+        }
+        bService.updateBlog(blogId, form.getSubject(),
+                form.getBody(), form.getPhotos(), form.getComment());
+        return "redirect:/blog/view/" + blogId;
+    }
+
+
+
+    }
+
+
