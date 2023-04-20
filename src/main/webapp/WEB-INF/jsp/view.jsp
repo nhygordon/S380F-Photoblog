@@ -31,7 +31,11 @@
 
     <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
-            <a class="nav-link" href="https://getbootstrap.com/docs/4.0/examples/dashboard/#">Sign out</a>
+            <c:url var="logoutUrl" value="/logout"/>
+            <form action="${logoutUrl}" method="post">
+                <input type="submit" value="Log out" />
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            </form>
         </li>
     </ul>
 </nav>
@@ -79,8 +83,15 @@
                                     <div class="card-body">
                                         <h5 class="card-title"><c:out value="${photo.name}"/></h5>
                                         <br><br>
-                                        <a class="btn btn-primary"
-                                           href="<c:url value="/blog/${blogId}/delete/${photo.id}" />">Delete</a>
+                                        <security:authorize access="hasRole('ADMIN') or
+                                            principal.username=='${entry.customerName}'">
+                                            [<a href="<c:url value="/blog/edit/${entry.id}" />">Edit</a>]
+                                        </security:authorize>
+
+                                        <security:authorize access="hasRole('ADMIN')">
+                                            [<a class="btn btn-primary"
+                                               href="<c:url value="/blog/delete/${entry.id}" />">Delete</a>]
+                                        </security:authorize>
                                     </div>
                                 </div>
                             </div>

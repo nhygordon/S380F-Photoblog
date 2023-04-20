@@ -96,4 +96,28 @@ public class BlogService {
         Blog savedBlog = bRepo.save(blog);
         return savedBlog.getId();
     }
+    @Transactional(rollbackFor = BlogNotFound.class)
+    public void updateBlog(long id, String subject,
+                             String body, List<MultipartFile> attachments)
+            throws IOException, BlogNotFound {
+        Blog updatedBlog = bRepo.findById(id).orElse(null);
+        if (updatedBlog == null) {
+            throw new BlogNotFound(id);
+        }
+        updatedBlog.setSubject(subject);
+        updatedBlog.setBody(body);
+        for (MultipartFile filePart : attachments) {
+            Photo photo = new Photo();
+            photo.setName(filePart.getOriginalFilename());
+            photo.setMimeContentType(filePart.getContentType());
+            photo.setContents(filePart.getBytes());
+            photo.setBlog(updatedBlog);
+            if (photo.getName() != null && photo.getName().length() > 0
+                    && photo.getContents() != null
+                    && photo.getContents().length > 0) {
+                updatedBlog.getPhotos().add(photo);
+            }
+        }
+        bRepo.save(updatedBlog);
+    }
 }

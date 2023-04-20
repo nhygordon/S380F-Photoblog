@@ -31,7 +31,11 @@
 
   <ul class="navbar-nav px-3">
     <li class="nav-item text-nowrap">
-      <a class="nav-link" href="https://getbootstrap.com/docs/4.0/examples/dashboard/#">Sign out</a>
+      <c:url var="logoutUrl" value="/logout"/>
+      <form action="${logoutUrl}" method="post">
+        <input type="submit" value="Log out" />
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+      </form>
     </li>
   </ul>
 </nav>
@@ -65,8 +69,6 @@
       <div class="container">
         <h2>Create a blog</h2>
           <form:form method="POST" enctype="multipart/form-data" modelAttribute="blogForm">
-            <form:label path="customerName">User Name</form:label><br/>
-            <form:input type="text" path="customerName"/><br/><br/>
             <form:label path="subject">Subject</form:label><br/>
             <form:input type="text" path="subject"/><br/><br/>
             <form:label path="body">Body</form:label><br/>

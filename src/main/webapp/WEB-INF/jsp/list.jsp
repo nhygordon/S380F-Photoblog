@@ -31,7 +31,11 @@
 
     <ul class="navbar-nav px-3">
         <li class="nav-item text-nowrap">
-            <a class="nav-link" href="https://getbootstrap.com/docs/4.0/examples/dashboard/#">Sign out</a>
+            <c:url var="logoutUrl" value="/logout"/>
+            <form action="${logoutUrl}" method="post">
+                <input type="submit" value="Log out" />
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            </form>
         </li>
     </ul>
 </nav>
@@ -63,7 +67,12 @@
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
             <div class="container">
-                <h2>All Photos</h2>
+                <h2>All PhotoBlogs</h2>
+                <security:authorize access="hasRole('ADMIN')">
+                <a href="<c:url value="/user" />">Manage User Accounts</a><br /><br />
+                </security:authorize>
+
+                <a href="<c:url value="/blog/create" />">Create a Blog</a><br/><br/>
                 <c:choose>
                 <c:when test="${fn:length(blogDatabase) == 0}">
                 <i>There are no blogs in the system.</i>
@@ -72,18 +81,26 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="row">
-                            <c:forEach items="${photoDatabase}" var="entry2">
+                            <c:forEach items="${blogDatabase}" var="entry">
+                                Ticket ${entry.id}:
                                 <div class="col-xxl-6 col-md-6 mx-auto w-100 h-100 align-item-stretch">
                                     <div class="card">
                                         <img class="card-img-top"
-                                             src="<c:url value="/blog/${entry2.blogId}/photo/${entry2.id}" />">
+                                             src="<c:url value="/blog/${entry.id}/photo/${entry.id}" />">
                                         <div class="card-body">
-                                            <h5 class="card-title">${entry2.name}</h5>
+                                            <h5 class="card-title">${entry.customerName}</h5>
                                             <br><br>
+                                            <security:authorize access="hasRole('ADMIN') or
+                                            principal.username=='${entry.customerName}'">
+                                            <a class="btn btn-primary" href="<c:url value="/blog/edit/${entry.id}" />">Edit</a>
+                                            </security:authorize>
+
+                                            <security:authorize access="hasRole('ADMIN')">
                                             <a class="btn btn-primary"
-                                               href="<c:url value="/blog/delete/${entry2.blogId}" />">Delete</a>
+                                               href="<c:url value="/blog/delete/${entry.id}" />">Delete</a>
+                                            </security:authorize>
                                             <a class="btn btn-primary"
-                                               href="<c:url value="/blog/view/${entry2.blogId}" />">Go in and see more
+                                               href="<c:url value="/blog/view/${entry.id}" />">Go in and see more
                                             </a>
                                         </div>
                                     </div>
