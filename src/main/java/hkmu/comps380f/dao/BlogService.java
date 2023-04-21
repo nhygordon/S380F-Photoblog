@@ -75,7 +75,7 @@ public class BlogService {
     }
     @Transactional
     public long createBlog(String customerName, String subject,
-                             String body, List<MultipartFile> attachments)
+                           String body, List<MultipartFile> attachments, String comment)
             throws IOException {
         Blog blog = new Blog();
         blog.setCustomerName(customerName);
@@ -98,7 +98,7 @@ public class BlogService {
     }
     @Transactional(rollbackFor = BlogNotFound.class)
     public void updateBlog(long id, String subject,
-                             String body, List<MultipartFile> attachments)
+                           String body, List<MultipartFile> attachments, String comment)
             throws IOException, BlogNotFound {
         Blog updatedBlog = bRepo.findById(id).orElse(null);
         if (updatedBlog == null) {
@@ -120,4 +120,5 @@ public class BlogService {
         }
         bRepo.save(updatedBlog);
     }
-}
+
+    }
